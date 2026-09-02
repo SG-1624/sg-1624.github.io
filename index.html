@@ -32126,6 +32126,24 @@ body.cs-lock {
 
 
 </style>
+
+<style>
+/* ===== [悬浮窗修复] 高级功能悬浮窗与设置悬浮窗保持一致 ===== */
+#advanced-modal .modal-content {
+    width: 90% !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+    align-self: center !important;
+    flex: 0 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+#advanced-modal .modal-buttons {
+    margin-top: auto !important;
+    position: sticky !important;
+    bottom: 0 !important;
+}
+</style>
 </head>
 <body data-avatar-pos="center" class="home-active">
 <div id="splash-declaration" class="splash-fade-out" style="display: none;">
@@ -32332,8 +32350,21 @@ body.cs-lock {
                             <i class="fas fa-comment-alt"></i>
                             <span class="app-badge" id="chat-badge" style="display:none;"></span>
                         </div>
+             
+
                         <span class="app-name">聊天</span>
-                    </div><div class="app-item" onclick="openApp(&#39;mailbox&#39;)">
+                    </div>
+                    <div class="app-item" onclick="window.openCinema && window.openCinema()">
+                        <div class="app-icon" data-app="cinema"><i class="fas fa-film"></i></div>
+                        <span class="app-name">电影院</span>
+                    </div><div class="app-item" onclick="(function(){if(window._surveyOpenListModal){window._surveyOpenListModal();}else{var m=document.getElementById('survey-modal');if(m&&window.showModal)window.showModal(m);}})()">
+                        <div class="app-icon" data-app="survey"><i class="fas fa-clipboard-list"></i></div>
+                        <span class="app-name">高级问卷</span>
+                    </div><div class="app-item" onclick="(function(){var p=document.getElementById('player');if(!p)return;var e=!(window.settings&&window.settings.musicPlayerEnabled);if(window.settings){window.settings.musicPlayerEnabled=e;try{if(typeof throttledSaveData==='function')throttledSaveData();}catch(_){}}p.classList.toggle('visible',e);window.showToast?showToast(e?'🎵 悬浮音乐播放器已开启':'🎵 悬浮音乐播放器已关闭'):alert(e?'已开启':'已关闭');})()">
+                        <div class="app-icon" data-app="music"><i class="fas fa-music"></i></div>
+                        <span class="app-name">悬浮音乐</span>
+                    </div>
+<div class="app-item" onclick="openApp(&#39;mailbox&#39;)">
                         <div class="app-icon" data-app="mailbox"><i class="fas fa-envelope"></i></div>
                         <span class="app-name">信封投递</span>
                     </div><div class="app-item" onclick="openApp(&#39;moyu&#39;)">
@@ -35216,7 +35247,7 @@ body.cs-lock {
     <button id="collapse-expand-btn" title="展开更多" style="display:none;width:36px;height:36px;border:none;border-radius:50%;cursor:pointer;background:rgba(var(--accent-color-rgb),0.12);color:var(--accent-color);font-size:14px;transition:all 0.25s;flex-shrink:0;align-items:center;justify-content:center;" onclick="window.toggleCollapsedExtras &amp;&amp; window.toggleCollapsedExtras()"><i class="fas fa-chevron-up"></i></button>
     <button id="call-toolbar-btn" title="视频通话" class="input-btn collapse-hideable"><i class="fas fa-video"></i></button><button class="attachment-btn input-btn collapse-hideable" id="attachment-btn" title="发送图片"><i class="fas fa-image"></i></button>
     
-    <button class="combo-btn input-btn collapse-hideable" id="combo-btn" title="表情 &amp; 拍一拍" data-initialized="true">
+    <button class="combo-btn input-btn collapse-hideable" id="combo-btn" title="表情 &amp; 拍一拍">
         <i class="fas fa-laugh-beam"></i>
     </button>
 
@@ -36458,16 +36489,16 @@ body.cs-lock {
                     <div class="settings-item" id="fortune-lenormand-function" style="position:relative;">
                         <i class="fas fa-star-and-crescent"></i><span>运势 · 占卜</span>
                     </div>
-                    <div class="settings-item" id="mood-function" data-initialized="true">
+                    <div class="settings-item" id="mood-function">
                         <i class="fas fa-calendar-day"></i><span>心晴手账</span>
                     </div>
                     <div class="settings-item" id="envelope-function">
                         <i class="fas fa-envelope"></i><span>信封投递</span>
                     </div>
-                    <div class="settings-item" id="diary-function" data-initialized="true">
+                    <div class="settings-item" id="diary-function">
                         <i class="fas fa-clipboard-list"></i><span>朝夕心记</span>
                     </div>
-                    <div class="settings-item" id="accounting-function" data-initialized="true">
+                    <div class="settings-item" id="accounting-function">
                         <i class="fas fa-coins"></i><span>同心记账</span>
                     </div>
                 
@@ -36487,18 +36518,10 @@ body.cs-lock {
                         <i class="fas fa-book"></i><span>书架</span>
                     </div>
                     <div class="settings-item" 
-                    <div class="settings-item" id="companion-function" style="position:relative;">
-                        <i class="fas fa-hand-holding-heart"></i><span>陪伴模式</span>
-                    </div>
-                    <div class="settings-item" id="cinema-function" style="position:relative;">
-                        <i class="fas fa-film"></i><span>电影院</span>
-                    </div>
-                    <div class="settings-item" id="survey-function" style="position:relative;">
-                        <i class="fas fa-clipboard-list"></i><span>高级问卷</span>
-                    </div>
-                    <div class="settings-item" id="music-player-function" style="position:relative;">
-                        <i class="fas fa-music"></i><span>悬浮音乐播放器</span>
-                    </div>
+                    
+                    
+                    
+                    
 id="gift-blindbox-function">
                         <i class="fas fa-gift"></i><span>礼物盲盒</span>
                     </div>
@@ -36696,22 +36719,22 @@ id="gift-blindbox-function">
                 <i class="fas fa-book-open"></i><span>心晴手帐</span>
             </div>
             <div style="display:flex; gap:8px;">
-                <button class="view-switch-btn active" id="btn-view-calendar" data-initialized="true">
+                <button class="view-switch-btn active" id="btn-view-calendar">
                     <i class="fas fa-calendar-alt"></i> 日历
                 </button>
-                <button class="view-switch-btn" id="btn-view-stats" data-initialized="true">
+                <button class="view-switch-btn" id="btn-view-stats">
                     <i class="fas fa-chart-pie"></i> 统计
                 </button>
-                <button class="view-switch-btn" id="btn-view-trash" data-initialized="true">
+                <button class="view-switch-btn" id="btn-view-trash">
                     <i class="fas fa-recycle"></i> 回收站
                 </button>
             </div>
         </div>
         <div id="mood-calendar-view" class="mood-view-section">
             <div class="calendar-header">
-                <button class="calendar-nav-btn" id="prev-month" data-initialized="true"><i class="fas fa-chevron-left"></i></button>
+                <button class="calendar-nav-btn" id="prev-month"><i class="fas fa-chevron-left"></i></button>
                 <div class="current-month-label" id="calendar-month-label">2026年 9月</div>
-                <button class="calendar-nav-btn" id="next-month" data-initialized="true"><i class="fas fa-chevron-right"></i></button>
+                <button class="calendar-nav-btn" id="next-month"><i class="fas fa-chevron-right"></i></button>
             </div>
             <div class="calendar-weekdays">
                 <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
@@ -36779,15 +36802,15 @@ id="gift-blindbox-function">
         </div>
     
         <div class="modal-buttons">
-            <button class="modal-btn modal-btn-secondary" id="mood-export-btn" style="flex:1;" data-initialized="true">导出</button>
-            <button class="modal-btn modal-btn-secondary" id="mood-import-btn" style="flex:1;" data-initialized="true">导入</button>
-            <input type="file" id="mood-import-file-input" accept="application/json" style="display:none;" data-initialized="true">
-            <button class="modal-btn modal-btn-secondary" id="close-mood" data-initialized="true">关闭</button>
+            <button class="modal-btn modal-btn-secondary" id="mood-export-btn" style="flex:1;">导出</button>
+            <button class="modal-btn modal-btn-secondary" id="mood-import-btn" style="flex:1;">导入</button>
+            <input type="file" id="mood-import-file-input" accept="application/json" style="display:none;">
+            <button class="modal-btn modal-btn-secondary" id="close-mood">关闭</button>
         </div>
        </div>
     </div>
 
-    <div class="mood-selector-overlay" id="mood-selector-overlay" data-initialized="true">
+    <div class="mood-selector-overlay" id="mood-selector-overlay">
         <div class="mood-selector-card" id="mood-editor-view">
             <h3 id="mood-selector-date">--月--日</h3>
             
@@ -36826,7 +36849,7 @@ id="gift-blindbox-function">
             </div>
     
             <div style="display:flex; gap:10px; margin-top:15px;">
-                <button class="modal-btn modal-btn-secondary" id="cancel-mood-edit" style="flex:1;" data-initialized="true">取消</button>
+                <button class="modal-btn modal-btn-secondary" id="cancel-mood-edit" style="flex:1;">取消</button>
                 <button class="modal-btn modal-btn-secondary" id="view-mood-detail-btn" onclick="viewMoodDetailFromEditor()" style="flex:1;">查看详情</button>
                 <button class="modal-btn modal-btn-primary" id="confirm-mood-save" style="flex:1;">保存</button>
             </div>
@@ -36888,13 +36911,13 @@ id="gift-blindbox-function">
 
             <!-- 月份切换和统计 -->
             <div class="accounting-header-stats">
-                <button class="accounting-month-btn" id="accounting-prev-month" data-bound="true">
+                <button class="accounting-month-btn" id="accounting-prev-month">
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <div class="accounting-month-display">
                     <span id="accounting-current-month">2024年1月</span>
                 </div>
-                <button class="accounting-month-btn" id="accounting-next-month" data-bound="true">
+                <button class="accounting-month-btn" id="accounting-next-month">
                     <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
@@ -36916,16 +36939,16 @@ id="gift-blindbox-function">
 
             <!-- 标签页切换 -->
             <div class="accounting-tabs">
-                <button class="accounting-tab-btn active" data-tab="expense" data-bound="true">
+                <button class="accounting-tab-btn active" data-tab="expense">
                     <i class="fas fa-arrow-down"></i> <span>支出</span>
                 </button>
-                <button class="accounting-tab-btn" data-tab="income" data-bound="true">
+                <button class="accounting-tab-btn" data-tab="income">
                     <i class="fas fa-arrow-up"></i> <span>收入</span>
                 </button>
-                <button class="accounting-tab-btn" data-tab="stats" data-bound="true">
+                <button class="accounting-tab-btn" data-tab="stats">
                     <i class="fas fa-chart-pie"></i> <span>统计</span>
                 </button>
-                <button class="accounting-tab-btn" data-tab="labels" data-bound="true">
+                <button class="accounting-tab-btn" data-tab="labels">
                     <i class="fas fa-tags"></i> <span>标签</span>
                 </button>
             </div>
@@ -36952,10 +36975,10 @@ id="gift-blindbox-function">
 
             <!-- 底部按钮 -->
             <div class="modal-buttons" style="margin-top:12px;">
-                <button class="modal-btn modal-btn-secondary" id="back-accounting" style="flex:1;" data-bound="true">
+                <button class="modal-btn modal-btn-secondary" id="back-accounting" style="flex:1;">
                     <i class="fas fa-arrow-left"></i> 返回
                 </button>
-                <button class="modal-btn modal-btn-primary" id="accounting-add-record-btn" style="flex:2;" data-bound="true">
+                <button class="modal-btn modal-btn-primary" id="accounting-add-record-btn" style="flex:2;">
                     <i class="fas fa-plus"></i> 添加记录
                 </button>
             </div>
@@ -36967,7 +36990,7 @@ id="gift-blindbox-function">
         <div class="accounting-form-popup">
             <div class="accounting-form-popup-header">
                 <span id="accounting-form-title">添加支出</span>
-                <button class="accounting-form-popup-close" id="accounting-form-cancel" data-bound="true">
+                <button class="accounting-form-popup-close" id="accounting-form-cancel">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -36988,7 +37011,7 @@ id="gift-blindbox-function">
                 <label>备注</label>
                 <input type="text" id="accounting-form-note" class="accounting-input" placeholder="备注（可选）..." maxlength="50">
             </div>
-            <button class="modal-btn modal-btn-primary accounting-form-popup-save" id="accounting-form-save" data-bound="true">
+            <button class="modal-btn modal-btn-primary accounting-form-popup-save" id="accounting-form-save">
                 <i class="fas fa-check"></i> 保存
             </button>
         </div>
@@ -37003,16 +37026,16 @@ id="gift-blindbox-function">
 
             <!-- 标签页切换 -->
             <div class="diary-tabs">
-                <button class="diary-tab-btn active" data-tab="todo" data-bound="true">
+                <button class="diary-tab-btn active" data-tab="todo">
                     <i class="fas fa-clipboard-check"></i> <span>待办</span>
                 </button>
-                <button class="diary-tab-btn" data-tab="habit" data-bound="true">
+                <button class="diary-tab-btn" data-tab="habit">
                     <i class="fas fa-fire"></i> <span>打卡</span>
                 </button>
-                <button class="diary-tab-btn" data-tab="period" data-bound="true">
+                <button class="diary-tab-btn" data-tab="period">
                     <i class="fas fa-calendar-alt"></i> <span>月经记录</span>
                 </button>
-                <button class="diary-tab-btn" data-tab="anniversary" data-bound="true">
+                <button class="diary-tab-btn" data-tab="anniversary">
                     <i class="fas fa-heart"></i> <span>纪念日</span>
                 </button>
             </div>
@@ -37033,7 +37056,7 @@ id="gift-blindbox-function">
                                 <i class="fas fa-pen" style="font-size:13px;"></i>
                                 <span>新建待办</span>
                             </div>
-                            <input type="text" id="diary-todo-input" class="diary-input" placeholder="输入待办事项..." maxlength="100" style="margin-bottom:12px;" data-bound="true">
+                            <input type="text" id="diary-todo-input" class="diary-input" placeholder="输入待办事项..." maxlength="100" style="margin-bottom:12px;">
                             <div class="diary-todo-form-row">
                                 <div class="diary-todo-form-field">
                                     <label>分类</label>
@@ -37065,7 +37088,7 @@ id="gift-blindbox-function">
                                         <span style="font-size:13px;font-weight:500;">设置提醒</span>
                                     </div>
                                     <label class="diary-todo-switch">
-                                        <input type="checkbox" id="diary-todo-reminder-enabled" data-bound="true">
+                                        <input type="checkbox" id="diary-todo-reminder-enabled">
                                         <span class="diary-todo-switch-slider"></span>
                                     </label>
                                 </div>
@@ -37088,8 +37111,8 @@ id="gift-blindbox-function">
                         </div>
                     </div>
                     <div class="diary-todo-compose-actions">
-                        <button class="modal-btn modal-btn-secondary" id="diary-todo-cancel-btn" style="flex:1;" data-bound="true">取消</button>
-                        <button class="modal-btn modal-btn-primary" id="diary-todo-save-btn" style="flex:2;" data-bound="true">
+                        <button class="modal-btn modal-btn-secondary" id="diary-todo-cancel-btn" style="flex:1;">取消</button>
+                        <button class="modal-btn modal-btn-primary" id="diary-todo-save-btn" style="flex:2;">
                             <i class="fas fa-check" style="margin-right:6px;"></i>保存待办
                         </button>
                     </div>
@@ -37110,7 +37133,7 @@ id="gift-blindbox-function">
                                 <i class="fas fa-fire" style="font-size:13px;"></i>
                                 <span>新建习惯</span>
                             </div>
-                            <input type="text" id="diary-habit-name-input" class="diary-input" placeholder="输入习惯名称..." maxlength="20" style="margin-bottom:12px;" data-bound="true">
+                            <input type="text" id="diary-habit-name-input" class="diary-input" placeholder="输入习惯名称..." maxlength="20" style="margin-bottom:12px;">
                             <div class="diary-habit-form-row">
                                 <div class="diary-habit-form-field">
                                     <label>图标</label>
@@ -37145,7 +37168,7 @@ id="gift-blindbox-function">
                                         <span style="font-size:13px;font-weight:500;">设置提醒</span>
                                     </div>
                                     <label class="diary-todo-switch">
-                                        <input type="checkbox" id="diary-habit-reminder-enabled" data-bound="true">
+                                        <input type="checkbox" id="diary-habit-reminder-enabled">
                                         <span class="diary-todo-switch-slider"></span>
                                     </label>
                                 </div>
@@ -37167,8 +37190,8 @@ id="gift-blindbox-function">
                         </div>
                     </div>
                     <div class="diary-habit-compose-actions">
-                        <button class="modal-btn modal-btn-secondary" id="diary-habit-cancel-btn" style="flex:1;" data-bound="true">取消</button>
-                        <button class="modal-btn modal-btn-primary" id="diary-habit-save-btn" style="flex:2;" data-bound="true">
+                        <button class="modal-btn modal-btn-secondary" id="diary-habit-cancel-btn" style="flex:1;">取消</button>
+                        <button class="modal-btn modal-btn-primary" id="diary-habit-save-btn" style="flex:2;">
                             <i class="fas fa-check" style="margin-right:6px;"></i>保存习惯
                         </button>
                     </div>
@@ -37189,14 +37212,14 @@ id="gift-blindbox-function">
                         <option value="anniversary">纪念日</option>
                         <option value="countdown">倒数日</option>
                     </select>
-                    <button class="diary-add-btn" id="diary-ann-add-btn" data-bound="true"><i class="fas fa-plus"></i></button>
+                    <button class="diary-add-btn" id="diary-ann-add-btn"><i class="fas fa-plus"></i></button>
                 </div>
                 <div id="diary-anniversary-list"></div>
             </div>
 
             <!-- 底部按钮 -->
             <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px 0 0;z-index:10;margin-top:8px;margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px;padding-bottom:max(14px, env(safe-area-inset-bottom, 0px));">
-                <button class="modal-btn modal-btn-secondary" id="back-diary" data-bound="true">
+                <button class="modal-btn modal-btn-secondary" id="back-diary">
                     <i class="fas fa-arrow-left"></i> 返回
                 </button>
                 <button class="modal-btn modal-btn-secondary" id="close-diary" style="display:none;" onclick="handleCreateTodoClick()"><i class="fas fa-plus-circle"></i> 创建新待办</button>
@@ -37503,19 +37526,19 @@ id="gift-blindbox-function">
                 <i class="fas fa-balance-scale"></i><span>抉择助手</span>
             </div>
             <div class="decision-menu-grid">
-                <div class="decision-option-card" id="open-coin-toss" data-initialized="true">
+                <div class="decision-option-card" id="open-coin-toss">
                     <i class="fas fa-coins"></i>
                     <h3>抛硬币</h3>
                     <p>是 / 否 二元选择</p>
                 </div>
-                <div class="decision-option-card" id="open-wheel" data-initialized="true">
+                <div class="decision-option-card" id="open-wheel">
                     <i class="fas fa-magic"></i>
                     <h3>随机抽签</h3>
                     <p>自定义选项随机抽取</p>
                 </div>
             </div>
             <div class="modal-buttons">
-                <button class="modal-btn modal-btn-secondary" id="close-decision-menu" data-initialized="true">关闭</button>
+                <button class="modal-btn modal-btn-secondary" id="close-decision-menu">关闭</button>
             </div>
         </div>
     </div>
@@ -37534,16 +37557,16 @@ id="gift-blindbox-function">
                 <div class="picker-controls">
                     <div class="picker-options-label">选项列表（至少 2 项）</div>
                     <div class="picker-options-list" id="wheel-options-list"></div>
-                    <button class="modal-btn modal-btn-secondary picker-add-btn" id="add-wheel-option" data-initialized="true">
+                    <button class="modal-btn modal-btn-secondary picker-add-btn" id="add-wheel-option">
                         <i class="fas fa-plus"></i> 添加选项
                     </button>
                 </div>
             </div>
     
             <div class="modal-buttons">
-                <button class="modal-btn modal-btn-secondary" id="close-wheel" data-initialized="true">关闭</button>
-                <button class="modal-btn modal-btn-primary" id="spin-wheel-btn" data-initialized="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 12a10 10 0 0 1 18.8-3.6M22 12a10 10 0 0 1-18.8 3.6"></path></svg> 开始抽签</button>
-                <button class="modal-btn modal-btn-primary" id="send-wheel-result" style="display:none;" data-initialized="true">发送结果</button>
+                <button class="modal-btn modal-btn-secondary" id="close-wheel">关闭</button>
+                <button class="modal-btn modal-btn-primary" id="spin-wheel-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 12a10 10 0 0 1 18.8-3.6M22 12a10 10 0 0 1-18.8 3.6"></path></svg> 开始抽签</button>
+                <button class="modal-btn modal-btn-primary" id="send-wheel-result" style="display:none;">发送结果</button>
             </div>
         </div>
     </div>
@@ -107497,7 +107520,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const latestSystemSongs = [
   {
     "title": "ANSWER",
-    "sub": "들리니 I'm callin' you",
+    "sub": "能听到吗 I'm callin' you",
     "url": "https://files.catbox.moe/hzpr94.mp3"
   },
   {
@@ -107537,7 +107560,7 @@ document.addEventListener('DOMContentLoaded', () => {
   },
   {
     "title": "初雪",
-    "sub": "바보 같은 난 아무 말 못해",
+    "sub": "像傻瓜一样的我 什么都说不出口",
     "url": "https://img.heliar.top/file/1773547905373_%EC%B2%AB_%EB%88%88__%E5%88%9D%E9%9B%AA_.m4a"
   },
   {
@@ -107557,7 +107580,7 @@ document.addEventListener('DOMContentLoaded', () => {
   },
   {
     "title": "First Snow",
-    "sub": "君だけが好きで ずっ好きで",
+    "sub": "只喜欢你 一直都喜欢你",
     "url": "https://img.heliar.top/file/1773543103115_first_snow.mp3.m4a"
   },
   {

@@ -4216,6 +4216,7 @@ body.immersive-mode .header {
     top: 0;
     left: 0;
     right: 0;
+    z-index: 60;
     transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease;
 }
 body.immersive-mode .chat-container {
@@ -4488,8 +4489,13 @@ html[data-theme="dark"] .username:hover {
 
 .main-chat-area {
     flex: 1;
-    position: relative;
-    z-index: 3;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: var(--chat-top, 107px);
+    height: auto;
+    z-index: 50;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -109100,4 +109106,32 @@ playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 65 : 
 
 </script>
 <!-- ========== [合并结束] ========== -->
+
+<script>
+/* [chat-layout-fix] 同步聊天区顶部高度，避免被flex压缩 */
+(function(){
+  function syncChatTop(){
+    try{
+      var h = document.querySelector('.header');
+      var ma = document.querySelector('.main-chat-area');
+      if(!h || !ma) return;
+      var hd = getComputedStyle(h).display;
+      var md = getComputedStyle(ma).display;
+      if(hd === 'none' && md === 'none') return;
+      var top = Math.round(h.getBoundingClientRect().height);
+      if(top > 0){
+        var cur = parseFloat(getComputedStyle(ma).top) || 0;
+        if(Math.abs(cur - top) > 2){
+          document.documentElement.style.setProperty('--chat-top', top + 'px');
+          ma.style.top = top + 'px';
+        }
+      }
+    }catch(e){}
+  }
+  var t = setInterval(syncChatTop, 350);
+  window.addEventListener('resize', syncChatTop);
+  document.addEventListener('DOMContentLoaded', syncChatTop);
+  window.addEventListener('load', syncChatTop);
+})();
+</script>
 </body></html>

@@ -32144,6 +32144,41 @@ body.cs-lock {
     bottom: 0 !important;
 }
 </style>
+
+<style>
+/* ===== [问卷分类修复] cd-chip / cd-dropdown 样式（原依赖 styles.css，融合时未包含）===== */
+.cd-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 16px; cursor: pointer;
+    border: 1.5px solid rgba(var(--accent-color-rgb), 0.35);
+    background: var(--card-bg, #fff);
+    font-size: 13px; color: var(--text-secondary);
+    transition: all .2s ease; position: relative;
+    -webkit-tap-highlight-color: transparent;
+}
+.cd-chip.active {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: rgba(var(--accent-color-rgb), 0.08);
+}
+.cd-chip:hover { border-color: var(--accent-color); }
+.cd-dropdown {
+    position: absolute; top: calc(100% + 6px); left: 0; z-index: 60;
+    min-width: 150px; background: var(--card-bg, #fff);
+    border: 1px solid var(--border-color);
+    border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    padding: 6px; display: none;
+}
+.cd-dropdown.open { display: block; }
+.cd-dropdown-item {
+    padding: 8px 12px; border-radius: 8px; cursor: pointer;
+    font-size: 13px; color: var(--text-primary);
+    white-space: nowrap; transition: background .15s ease;
+}
+.cd-dropdown-item:hover { background: rgba(var(--accent-color-rgb), 0.08); }
+.cd-dropdown-item.active { color: var(--accent-color); background: rgba(var(--accent-color-rgb), 0.10); font-weight: 600; }
+</style>
+
 </head>
 <body data-avatar-pos="center" class="home-active">
 <div id="splash-declaration" class="splash-fade-out" style="display: none;">
@@ -36482,10 +36517,7 @@ body.cs-lock {
                     <div class="settings-item" id="stats-function">
                         <i class="fas fa-chart-bar"></i><span>消息统计</span>
                     </div>
-                    <div class="settings-item" id="decision-function">
-                        <i class="fas fa-balance-scale"></i> 
-                        <span>抉择</span> 
-                    </div>
+                    
                     <div class="settings-item" id="fortune-lenormand-function" style="position:relative;">
                         <i class="fas fa-star-and-crescent"></i><span>运势 · 占卜</span>
                     </div>
@@ -41323,6 +41355,8 @@ function createMessageFragment(msg, prevMsg, nextMsg, lastSenderRef) {
         const giftCard = document.createElement('div');
         giftCard.className = 'gift-card' + (msg.opened ? ' opened' : '');
         giftCard.setAttribute('data-id', msg.id);
+        giftCard.setAttribute('data-gift-img', msg.image || '');
+        giftCard.setAttribute('data-gift-text', msg.text || '');
         giftCard.setAttribute('data-opened', msg.opened);
         giftCard.addEventListener('click', (function(id) {
             return function() { handleGiftCardClick(id); };
@@ -56734,7 +56768,7 @@ function initDiaryListeners() {
         backBtn.dataset.bound = 'true';
         backBtn.addEventListener('click', () => {
             hideModal(document.getElementById('diary-modal'));
-            showModal(document.getElementById('advanced-modal'));
+            showHomePage();
         });
     }
 
@@ -58041,7 +58075,7 @@ function initAccountingListeners() {
         backBtn.dataset.bound = 'true';
         backBtn.addEventListener('click', () => {
             hideModal(document.getElementById('accounting-modal'));
-            showModal(document.getElementById('advanced-modal'));
+            showHomePage();
         });
     }
 
@@ -90629,8 +90663,24 @@ const firstDelay = 60 * 1000 + Math.random() * 14 * 60 * 1000; // 1-15分钟
     // 点击礼物卡片
     function handleGiftCardClick(messageId) {
         if (typeof messages === 'undefined') return;
-        const msg = messages.find(m => m.id === messageId && m.type === 'gift');
-        if (!msg) return;
+        let msg = null;
+        try { if (typeof messages !== 'undefined') msg = messages.find(m => m.id === messageId && m.type === 'gift'); } catch(e) {}
+        if (!msg) {
+            // 兜底：从卡片 DOM 读取礼物数据
+            const card = document.querySelector('.gift-card[data-id="' + messageId + '"]');
+            if (card) {
+                const img = card.getAttribute('data-gift-img') || '';
+                const txt = card.getAttribute('data-gift-text') || '一份神秘礼物';
+                openGiftModal(img, txt);
+                if (!card.classList.contains('opened')) {
+                    card.classList.add('opened');
+                    const ic = card.querySelector('.gift-icon i');
+                    if (ic) ic.className = 'fas fa-box-open';
+                }
+                return;
+            }
+            return;
+        }
 
         openGiftModal(msg.image, msg.text);
 
@@ -93136,7 +93186,7 @@ document.addEventListener('DOMContentLoaded', () => {
              不像大多数弹窗默认padding:24px，所以这里不用"负margin撑满再padding回来"那套技巧，
              直接在这个按钮条上加左右安全区padding就行，不然会跟其他弹窗一样越界被裁切、贴到屏幕边缘 -->
         <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px max(24px, env(safe-area-inset-right, 24px)) max(14px, env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 24px));z-index:10;margin-top:8px;">
-            <button class="modal-btn modal-btn-secondary" id="cd-back-btn" onclick="(function(){hideModal(document.getElementById('companion-diary-modal'));showModal(document.getElementById('advanced-modal'))})()">
+            <button class="modal-btn modal-btn-secondary" id="cd-back-btn" onclick="(function(){hideModal(document.getElementById('companion-diary-modal'));showHomePage()})()">
                 <i class="fas fa-arrow-left"></i> 返回
             </button>
             <button class="modal-btn modal-btn-secondary" id="close-companion-diary">关闭</button>
@@ -93174,7 +93224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div id="survey-list-body"></div>
             <div class="modal-buttons" style="position:sticky;bottom:0;background:var(--secondary-bg);border-top:1px solid var(--border-color);padding:12px 0 0;z-index:10;margin-top:8px;margin-left:-24px;margin-right:-24px;padding-left:max(24px, env(safe-area-inset-left, 24px));padding-right:max(24px, env(safe-area-inset-right, 24px));padding-bottom:max(14px, env(safe-area-inset-bottom, 0px));">
-                <button class="modal-btn modal-btn-secondary" id="survey-list-back-btn" onclick="(function(){hideModal(document.getElementById('survey-modal'));showModal(document.getElementById('advanced-modal'))})()">
+                <button class="modal-btn modal-btn-secondary" id="survey-list-back-btn" onclick="(function(){hideModal(document.getElementById('survey-modal'));showHomePage()})()">
                     <i class="fas fa-arrow-left"></i> 返回
                 </button>
                 <button class="modal-btn modal-btn-secondary" id="survey-list-close">关闭</button>
@@ -109157,4 +109207,32 @@ playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 65 : 
   window.addEventListener('load', syncChatTop);
 })();
 </script>
+
+<script>
+/* ===== [视频修复] HTML 预置的视频按钮从未绑定点击事件（injectToolbarBtn 因按钮已存在跳过），此处补绑定 ===== */
+(function(){
+    function bindCallBtn(){
+        var btn = document.getElementById('call-toolbar-btn');
+        if (btn && !btn.getAttribute('data-cbfixed')) {
+            btn.setAttribute('data-cbfixed', '1');
+            btn.addEventListener('click', function(e){
+                e.stopPropagation();
+                try {
+                    if (window.callFeature && typeof window.callFeature.startCall === 'function') {
+                        window.callFeature.startCall(false);
+                    }
+                } catch(err){}
+            });
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bindCallBtn);
+    } else {
+        bindCallBtn();
+    }
+    setTimeout(bindCallBtn, 800);
+    setTimeout(bindCallBtn, 2000);
+})();
+</script>
+
 </body></html>

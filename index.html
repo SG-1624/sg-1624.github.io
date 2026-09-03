@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <!-- saved from url=(0030)https://zunitear.github.io/ZY/ -->
-<html lang="zh-CN" data-theme="light" data-color-theme="gold" style="--in-chat-avatar-size: 36px; --avatar-align: center; --font-size: 16px; --message-font-family: &#39;Noto Serif SC&#39;, serif; --font-family: &#39;Noto Serif SC&#39;, serif; --message-font-weight: 400; --message-line-height: 1.5;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="zh-CN" data-theme="light" data-color-theme="gold" style="--in-chat-avatar-size: 36px; --avatar-align: center; --font-size: 16px; --message-font-family: &#39;Noto Serif SC&#39;, serif; --font-family: &#39;Noto Serif SC&#39;, serif; --message-font-weight: 400; --message-line-height: 1.5;"><head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="version" content="v3.2-fix-final">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
@@ -32179,6 +32184,12 @@ body.cs-lock {
 .cd-dropdown-item.active { color: var(--accent-color); background: rgba(var(--accent-color-rgb), 0.10); font-weight: 600; }
 </style>
 
+
+<script>
+/* 版本标记 v3.2-fix-final */
+try { console.log('传讯 v3.2-fix-final (含神秘礼物修复/抉择主页修复/弹窗移除)'); } catch(e){}
+</script>
+
 </head>
 <body data-avatar-pos="center" class="home-active">
 <div id="splash-declaration" class="splash-fade-out" style="display: none;">
@@ -32427,7 +32438,7 @@ body.cs-lock {
                     </div><div class="app-item" onclick="openApp(&#39;calendar&#39;)">
                         <div class="app-icon" data-app="calendar"><i class="fas fa-calendar-alt"></i></div>
                         <span class="app-name">日历</span>
-                    </div></div></div><div class="apps-page" id="apps-page-2"><div class="apps-grid"><div class="app-item" onclick="openApp(&#39;decide&#39;)">
+                    </div></div></div><div class="apps-page" id="apps-page-2"><div class="apps-grid"><div class="app-item" onclick="if(typeof showHomePage==='function'){showHomePage();}openApp(&#39;decide&#39;)">
                         <div class="app-icon" data-app="decide"><i class="fas fa-balance-scale"></i></div>
                         <span class="app-name">抉择</span>
                     </div><div class="app-item" onclick="openApp(&#39;stats&#39;)">
@@ -41813,9 +41824,13 @@ const addMessage = (message) => {
         container.appendChild(newMsgFragment);
     }
 
-    requestAnimationFrame(() => {
-        container.scrollTop = container.scrollHeight;
-    });
+    // [修复] 滚动到底部（多重兜底，确保礼物等新消息可见）
+    var __scrollToBottom = function(){
+        try { container.scrollTop = container.scrollHeight; } catch(e){}
+    };
+    requestAnimationFrame(__scrollToBottom);
+    setTimeout(__scrollToBottom, 60);
+    setTimeout(__scrollToBottom, 250);
 
     throttledSaveData();
 
@@ -43391,6 +43406,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (chatArea) chatArea.style.display = '';
         if (header) header.style.display = '';
         if (inputArea) inputArea.style.display = '';
+
+        // [修复] 进入聊天界面时滚动到底部，确保最新消息（含神秘礼物）可见（多次尝试覆盖消息加载时机）
+        setTimeout(function(){ var cc = document.getElementById('chat-container'); if (cc) cc.scrollTop = cc.scrollHeight; }, 120);
+        setTimeout(function(){ var cc = document.getElementById('chat-container'); if (cc) cc.scrollTop = cc.scrollHeight; }, 400);
+        setTimeout(function(){ var cc = document.getElementById('chat-container'); if (cc) cc.scrollTop = cc.scrollHeight; }, 900);
     };
 
     // ========== 萌宠屋页面切换 ==========
@@ -66323,6 +66343,9 @@ const tourSteps = [
 ];
 
 function startTour() {
+    // [已按用户要求禁用新手引导教程]
+    if (typeof endTour === 'function') { endTour(); }
+    return;
     isTourActive = true;
     tourOverlay.style.display = 'block';
     setTimeout(() => tourOverlay.classList.add('active'), 10);
@@ -90429,6 +90452,10 @@ const firstDelay = 60 * 1000 + Math.random() * 14 * 60 * 1000; // 1-15分钟
 <script>
 
 (function(){
+  // [已按用户要求禁用安装包弹窗]
+  localStorage.setItem('android_announcement_v1_ack', '1');
+  return;
+
   // 检测是否已经确认过公告
   if (localStorage.getItem('android_announcement_v1_ack')) return;
 

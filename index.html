@@ -44706,7 +44706,10 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             'decide': () => {
                 const modal = document.getElementById('decision-menu-modal');
-                if (modal) homeShowModal(modal);
+                if (modal) {
+                    if (typeof window.showHomePage === 'function') window.showHomePage();
+                    homeShowModal(modal);
+                }
             },
             'stats': () => {
                 const modal = document.getElementById('stats-modal');
@@ -90645,16 +90648,18 @@ const firstDelay = 60 * 1000 + Math.random() * 14 * 60 * 1000; // 1-15分钟
             sender: 'partner'
         };
 
-        if (typeof messages !== 'undefined') {
+        if (typeof addMessage === 'function') {
+            addMessage(giftMsg);
+        } else if (typeof messages !== 'undefined') {
             messages.push(giftMsg);
             if (typeof throttledSaveData === 'function') throttledSaveData();
             if (typeof renderMessages === 'function') renderMessages(false);
-            incrementGiftCount();
-            showNotification(' 收到一份神秘礼物！快去看看吧~', 'success', 3000);
-            console.log('[礼物] 礼物已发送');
         } else {
             console.error('[礼物] messages 未定义');
         }
+        incrementGiftCount();
+        showNotification(' 收到一份神秘礼物！快去看看吧~', 'success', 3000);
+        console.log('[礼物] 礼物已发送');
     }
 
     // 将函数挂载到 window 对象
@@ -90710,6 +90715,7 @@ const firstDelay = 60 * 1000 + Math.random() * 14 * 60 * 1000; // 1-15分钟
         }
     }
     window.closeGiftModal = closeGiftModal;
+    window.openGiftModal = openGiftModal;
 
     // 初始化定时器
     function initGiftFeature() {

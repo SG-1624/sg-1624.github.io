@@ -32190,6 +32190,62 @@ body.cs-lock {
 try { console.log('传讯 v3.2-fix-final (含神秘礼物修复/抉择主页修复/弹窗移除)'); } catch(e){}
 </script>
 
+
+<style>
+/* ===== [神秘礼物修复] 原 .gift-card 等 CSS 在样式标签之外未被解析，此处重新注入完整样式 ===== */
+.gift-card {
+  background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
+  border: 2px solid rgba(197, 164, 126, 0.3);
+  border-radius: 20px;
+  padding: 18px 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 28px rgba(197, 164, 126, 0.15);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.3s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.gift-card:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(197, 164, 126, 0.25); }
+.gift-card:active { transform: scale(0.96); }
+.gift-card.opened { background: linear-gradient(135deg, #f5f0f8 0%, #ffffff 100%); }
+.gift-icon {
+  width: 44px; height: 44px; border-radius: 14px;
+  background: rgba(197, 164, 126, 0.10);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; color: #c5a47e; flex-shrink: 0;
+  transition: background 0.3s, color 0.3s;
+}
+.gift-card.opened .gift-icon { background: rgba(197, 164, 126, 0.18); }
+.gift-label { font-size: 14px; font-weight: 600; color: #333333; letter-spacing: 0.5px; }
+.gift-message-wrapper { display: flex; justify-content: center; margin: 6px 0; }
+#gift-modal {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 2001;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.gift-modal-content {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 28px 24px 24px;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+.gift-modal-image { width: 120px; height: 120px; object-fit: cover; border-radius: 16px; margin-bottom: 14px; }
+.gift-modal-text { font-size: 16px; line-height: 1.7; color: #333333; margin-bottom: 16px; }
+.gift-close-btn {
+  background: rgba(197, 164, 126, 0.15); color: #c5a47e;
+  border: 1px solid rgba(197, 164, 126, 0.3);
+  border-radius: 20px; padding: 8px 28px; font-size: 14px; cursor: pointer;
+}
+</style>
+
 </head>
 <body data-avatar-pos="center" class="home-active">
 <div id="ver-badge" style="position:fixed;bottom:2px;right:4px;z-index:999999;font-size:9px;color:rgba(150,150,150,0.55);pointer-events:none;background:transparent;">v3.2-20260903</div>
@@ -41377,7 +41433,7 @@ function createMessageFragment(msg, prevMsg, nextMsg, lastSenderRef) {
         const iconDiv = document.createElement('div');
         iconDiv.className = 'gift-icon';
         const icon = document.createElement('i');
-        icon.className = msg.opened ? 'fas fa-box-open' : 'fas fa-gift';
+        icon.textContent = msg.opened ? '📦' : '🎁';
         iconDiv.appendChild(icon);
         const label = document.createElement('span');
         label.className = 'gift-label';

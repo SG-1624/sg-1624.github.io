@@ -109270,4 +109270,51 @@ playlist.style.top = (rect.top + (player.classList.contains('collapsed') ? 65 : 
 })();
 </script>
 
+
+<div id="diag-panel" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;color:#222;z-index:99999999;overflow:auto;padding:16px;font-size:12px;font-family:monospace;">
+  <button onclick="document.getElementById('diag-panel').style.display='none'" style="padding:8px 16px;margin-bottom:10px;">关闭诊断面板</button>
+  <pre id="diag-content" style="white-space:pre-wrap;word-break:break-all;"></pre>
+</div>
+
+
+<script>
+/* ===== 诊断模式（URL 带 ?diag 时显示内部状态，用于远程定位 bug）===== */
+(function(){
+  if (location.search.indexOf('diag') < 0) return;
+  setTimeout(function(){
+    try {
+      var info = { version: 'v3.2-20260903', url: location.href, ua: navigator.userAgent };
+      var cc = document.getElementById('chat-container');
+      info.chatContainer = cc ? { exists:true, display:getComputedStyle(cc).display, scrollTop:cc.scrollTop, scrollHeight:cc.scrollHeight, clientHeight:cc.clientHeight, childCount:cc.children.length } : { exists:false };
+      var mca = document.querySelector('.main-chat-area');
+      info.mainChatArea = mca ? { display:getComputedStyle(mca).display, height:getComputedStyle(mca).height } : null;
+      var home = document.getElementById('home-container');
+      info.homeContainer = home ? { display:getComputedStyle(home).display, scrollHeight:home.scrollHeight, clientHeight:home.clientHeight } : null;
+      info.homeActive = document.body.classList.contains('home-active');
+      info.bodyOverflow = getComputedStyle(document.body).overflow;
+      try {
+        info.messagesLen = typeof messages !== 'undefined' ? messages.length : 'undefined';
+        info.giftMsgs = (typeof messages !== 'undefined') ? messages.filter(function(m){return m.type==='gift';}).length : 'n/a';
+        if (typeof messages !== 'undefined' && messages.length) {
+          info.lastMsgs = messages.slice(-6).map(function(m){ return {type:m.type, sender:m.sender, text:(m.content||m.text||'').toString().slice(0,30)}; });
+        }
+      } catch(e){ info.msgErr = String(e).slice(0,80); }
+      var menu = document.getElementById('decision-menu-modal');
+      info.decisionModal = menu ? { display:getComputedStyle(menu).display } : { exists:false };
+      var dec = document.querySelector('.app-item[data-app="decide"], .app-item');
+      info.decideItem = dec ? (dec.textContent.indexOf('抉择')>=0 ? '存在' : '无抉择') : '无';
+      var announce = document.getElementById('android-announcement-modal');
+      info.announceModal = announce ? { display:getComputedStyle(announce).display, opacity:getComputedStyle(announce).opacity } : null;
+      info.lsKeys = Object.keys(localStorage).filter(function(k){ return /gift|chat|message/i.test(k); }).slice(0,10);
+      document.getElementById('diag-content').textContent = JSON.stringify(info, null, 2);
+      var p = document.getElementById('diag-panel');
+      p.style.display = 'block';
+    } catch(e){
+      document.getElementById('diag-content').textContent = '诊断错误: ' + String(e);
+      document.getElementById('diag-panel').style.display = 'block';
+    }
+  }, 4000);
+})();
+</script>
+
 </body></html>
